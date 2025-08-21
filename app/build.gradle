@@ -1,0 +1,51 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.beryx.jlink' version '2.26.0'
+}
+
+repositories { mavenCentral() }
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(23) }
+}
+
+application {
+    mainModule = 'calculator.app'   // <<< THÊM DÒNG NÀY
+    mainClass  = 'main.App'         // class extends Application
+}
+
+javafx {
+    // DÙNG LTS 21.0.5 (ổn định, có đủ artifacts cho Windows)
+    version = "21.0.5"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+/* Không cần tự khai báo các dependency javafx nữa khi đã dùng plugin.
+   Chỉ để phần test nếu muốn: */
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.test { useJUnitPlatform() }
+
+jlink {
+    imageName = 'calc-runtime'
+    options = ['--strip-debug','--compress','2','--no-header-files','--no-man-pages']
+
+    // mergedModuleName  <<< XOÁ dòng này nếu còn
+
+    launcher {
+        name = 'Calculator'
+        jvmArgs = ['-Dfile.encoding=UTF-8'] // modular không cần --add-modules
+    }
+
+    jpackage {
+        installerType = 'exe'
+        appVersion = '1.0.0'
+        vendor = 'Your-Org'
+        icon = 'src/main/resources/img/app.ico'
+        installerOptions = ['--win-menu','--win-shortcut','--win-dir-chooser']
+    }
+}

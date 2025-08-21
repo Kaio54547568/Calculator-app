@@ -1,0 +1,46 @@
+.gradient_blue {
+  -fx-text-fill: linear-gradient(to right, #0077cc, #00529b);
+}
+
+.gradient_yellow {
+  -fx-text-fill: linear-gradient(to right, #dbdf04, #eff150);
+}
+
+.gradient_red {
+  -fx-text-fill: linear-gradient(to right, #d1051a, #b32836);
+}
+
+.gradient_brown {
+  -fx-text-fill: linear-gradient(to right, #3d0000, #5a1212);
+}
+
+.title {
+  -fx-text-fill: #1e2e6e;
+}
+
+.button-text-color {
+  -fx-text-fill: #3d0000;
+}
+
+.white {
+  -fx-text-fill: #ffffff;
+}
+
+.red {
+  -fx-text-fill: #ff0000;
+}
+
+.black {
+  -fx-text-fill: #000000;
+}
+
+.purple {
+  -fx-text-fill: #ff00f2;
+}
+
+.green {
+  -fx-text-fill: #007700;
+}
+.blue {
+  -fx-text-fill: #0077cc;
+}

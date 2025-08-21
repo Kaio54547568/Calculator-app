@@ -1,0 +1,29 @@
+.menu-buttonopenvertically {
+  -fx-background-color: linear-gradient(to right, #e9b414, #e4c465);
+  -fx-text-fill: white; /* Màu chữ trắng */
+  -fx-font-size: 12px; /* Cỡ chữ */
+  -fx-background-radius: 8px; /* Bo góc */
+  -fx-border-radius: 8px; /* Bo góc viền */
+  -fx-border-color: #e4c465; /* Màu viền */
+  -fx-border-width: 1px;
+  -fx-cursor: hand; /* Hiệu ứng con trỏ tay */
+  -fx-effect: dropshadow(
+    gaussian,
+    rgba(0, 0, 0, 0.25),
+    3,
+    0,
+    1,
+    1
+  ); /* Đổ bóng */
+
+  -fx-pref-width: 120px;
+  -fx-pref-height: 30px;
+}
+
+.menu-buttonopenvertically:hover {
+  -fx-background-color: linear-gradient(to right, #f7cd4c, #f2dc89);
+}
+
+.menu-buttonopenvertically:pressed {
+  -fx-background-color: linear-gradient(to right, #d9a600, #c5b54f);
+}
