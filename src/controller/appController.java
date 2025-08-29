@@ -1,13 +1,21 @@
 package controller;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
+import javafx.scene.control.ScrollPane;
+import javafx.application.Platform;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import handler.calculation;
+
+import javafx.scene.input.KeyCode;
+
 
 public class appController 
 {
@@ -138,6 +146,12 @@ public class appController
     @FXML
     private Button zeroButton;
     
+    @FXML private ScrollPane topScroll;
+    @FXML private AnchorPane topContent;
+    
+    private final Text measurer = new Text();
+  
+    
     /* ==== engine ==== */
     private final calculation engine = new calculation(true); // DEG
 
@@ -168,6 +182,7 @@ public class appController
         inputText.addEventFilter(KeyEvent.KEY_TYPED, e -> {
             if (!e.getCharacter().matches("[0-9A-Za-z\\-\\+\\^\\*/x×÷\\.,()\\sπ]")) e.consume();
         });
+        inputText.setOnAction(e -> equalButton.fire());
 
         /* digits */
         zeroButton.setOnAction(e -> append("0"));
@@ -221,6 +236,52 @@ public class appController
         clrButton.setOnAction(e -> clearAll());
 
         clearAll();
+        
+        
+        measurer.setFont(inputText.getFont());
+
+        ChangeListener<Object> updater = (obs, o, n) -> updateWidthsAndScroll();
+
+        inputText.textProperty().addListener(updater);
+        inputText.fontProperty().addListener(updater);
+        topScroll.viewportBoundsProperty().addListener(updater);
+
+        // chạy lần đầu
+        updateWidthsAndScroll();
+    }
+    
+    
+    private void updateWidthsAndScroll() {
+        // luôn đồng bộ font (CSS có thể áp sau initialize)
+        measurer.setFont(inputText.getFont());
+
+        double inputW   = measureTextWidth(inputText.getText());
+        double resultsW = measureTextWidth(resultsText.getText());
+        double textW    = Math.max(inputW, resultsW);
+
+        double padding   = 28; // 14 trái + 14 phải
+        double viewportW = topScroll.getViewportBounds().getWidth();
+        double desiredContentW = Math.max(viewportW, textW + padding);
+
+        topContent.setPrefWidth(desiredContentW);
+        inputText.setPrefWidth(desiredContentW - padding);
+        resultsText.setPrefWidth(desiredContentW - padding);
+
+        boolean caretAtEnd = inputText.getCaretPosition() == inputText.getLength();
+        if (caretAtEnd) {
+            Platform.runLater(() -> {
+                // kiểm tra lại lúc thực thi (phòng trường hợp bạn vừa kéo trái xong)
+                if (inputText.getCaretPosition() == inputText.getLength()) {
+                    topScroll.setHvalue(1.0);
+                }
+            });
+        }
+    }
+
+    private double measureTextWidth(String s) {
+        if (s == null || s.isEmpty()) s = " ";
+        measurer.setText(s);
+        return Math.ceil(measurer.getLayoutBounds().getWidth());
     }
 
     /* ===== helpers ===== */

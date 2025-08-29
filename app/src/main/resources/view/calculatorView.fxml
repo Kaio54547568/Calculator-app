@@ -327,7 +327,7 @@
                               <Font size="24.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="resultsText" layoutX="10.0" layoutY="155.0" prefHeight="25.0" prefWidth="430.0" stylesheets="@../style/textfield.css">
+                        <TextField fx:id="resultsText" layoutX="10.0" layoutY="155.0" prefHeight="25.0" prefWidth="430.0" styleClass="results" stylesheets="@../style/textfield.css">
                            <font>
                               <Font size="24.0" />
                            </font>
