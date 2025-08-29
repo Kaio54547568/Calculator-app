@@ -1,5 +1,6 @@
 # Calculator app
 A simple calculator app, made by java and javaFX
+Gradle を用いて構築されたアプリケーション
 
 DOWNLOAD LINK: https://drive.google.com/file/d/16EccGskHj0vEFZE3PwdwF3VcV3ZH-3PB/view?usp=sharing
 
