@@ -4,7 +4,27 @@
   -fx-background-radius: 0; /* Bo tròn = 0 (nếu muốn vuông hẳn) */
   -fx-border-color: transparent; /* Xóa viền */
   -fx-border-width: 0; /* Độ dày viền = 0 */
-  -fx-text-fill: black; /* Màu chữ (có thể đổi theo nền) */
+  -fx-text-fill: linear-gradient(
+    to right,
+    #3d0000,
+    #5a1212
+  ); /* Màu chữ (có thể đổi theo nền) */
   -fx-prompt-text-fill: gray; /* Màu placeholder (hint text) */
-  -fx-font-size: 18px; /* Tùy chỉnh font */
+  -fx-font-size: 24px; /* Tùy chỉnh font */
+}
+
+.text-field.results {
+  -fx-background-color: transparent; /* Xóa nền trắng mặc định */
+  -fx-background-insets: 0; /* Xóa khoảng viền nền */
+  -fx-background-radius: 0; /* Bo tròn = 0 (nếu muốn vuông hẳn) */
+  -fx-border-color: transparent; /* Xóa viền */
+  -fx-border-width: 0; /* Độ dày viền = 0 */
+  -fx-text-fill: linear-gradient(
+    to right,
+    #3d0000,
+    #5a1212
+  ); /* Màu chữ (có thể đổi theo nền) */
+  -fx-prompt-text-fill: gray; /* Màu placeholder (hint text) */
+  -fx-font-size: 24px; /* Tùy chỉnh font */
+  -fx-alignment: CENTER-RIGHT;
 }
