@@ -152,12 +152,13 @@ public class appController
     private final Text measurer = new Text();
   
     
-    /* ==== engine ==== */
-    private final calculation engine = new calculation(true); // DEG
+    // Engine để tính toán
+    private final calculation engine = new calculation(true);
 
     @FXML
-    public void initialize() {
-        // results chỉ hiển thị
+    public void initialize() 
+    {
+        // KQ
     	resultsText.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED, e -> e.consume());
     	resultsText.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
     	    switch (e.getCode()) {
@@ -168,23 +169,25 @@ public class appController
     	            e.consume();
     	            break;
     	        default:
-    	            // cho Ctrl+C, Ctrl+A
+    	            // Cho phép copy và select all
     	            if (e.isControlDown()) {
     	                switch (e.getCode()) {
     	                    case C: case A: return;
     	                }
     	            }
-    	            // còn lại chặn
+    	            // Còn lại thì không được =))))
     	            e.consume();
     	    }
     	});
         // input: cho gõ số/chữ/π/toán tử
-        inputText.addEventFilter(KeyEvent.KEY_TYPED, e -> {
-            if (!e.getCharacter().matches("[0-9A-Za-z\\-\\+\\^\\*/x×÷\\.,()\\sπ]")) e.consume();
-        });
+        inputText.addEventFilter(
+        		KeyEvent.KEY_TYPED, e -> {
+        			if (!e.getCharacter().matches("[0-9A-Za-z\\-\\+\\^\\*/x×÷\\.,()\\sπ]")) e.consume();
+        			}
+        		);
         inputText.setOnAction(e -> equalButton.fire());
 
-        /* digits */
+        // Khởi tạo
         zeroButton.setOnAction(e -> append("0"));
         oneButton.setOnAction(e -> append("1"));
         twoButton.setOnAction(e -> append("2"));
@@ -199,14 +202,12 @@ public class appController
         openbracketButton.setOnAction(e -> append("("));
         closebracketButton.setOnAction(e -> append(")"));
         dotButton.setOnAction(e -> append("."));
-        commaButton.setOnAction(e -> append(","));  // dấu phẩy cho frac/root
+        commaButton.setOnAction(e -> append(","));
 
-        /* constants/Ans -> chèn TEXT để còn tính tiếp */
-        piButton.setOnAction(e -> append("π"));    // thay "pi" bằng ký tự π
+        piButton.setOnAction(e -> append("π"));
         enumButton.setOnAction(e -> append("e"));
         ansButton.setOnAction(e -> append("Ans"));
 
-        /* prefix functions */
         sinButton.setOnAction(e -> append("sin("));
         cosButton.setOnAction(e -> append("cos("));
         tanButton.setOnAction(e -> append("tan("));
@@ -216,23 +217,21 @@ public class appController
         atanButton.setOnAction(e -> append("atan("));
         acotButton.setOnAction(e -> append("acot("));
         absButton.setOnAction(e -> append("Abs("));
-        logButton.setOnAction(e -> append("log("));    // log10
-        e_exButton.setOnAction(e -> append("e^("));    // e^(x)
-        fraction_showButton.setOnAction(e -> append("frac(")); // a / b -> frac(a,b)
-        rootButton.setOnAction(e -> append("root("));          // ⁿ√a -> root(n,a)
-        factorialButton.setOnAction(e -> append("!"));         // hậu tố
-        moduloButton.setOnAction(e -> append(" mod "));        // infix
-        exponentialButton.setOnAction(e -> append("^"));       // infix
+        logButton.setOnAction(e -> append("log("));
+        e_exButton.setOnAction(e -> append("e^("));
+        fraction_showButton.setOnAction(e -> append("frac("));
+        rootButton.setOnAction(e -> append("root("));
+        factorialButton.setOnAction(e -> append("!"));
+        moduloButton.setOnAction(e -> append(" mod "));
+        exponentialButton.setOnAction(e -> append("^"));
 
-        /* bốn phép cơ bản: infix */
         plusButton.setOnAction(e -> append(" + "));
         minusButton.setOnAction(e -> append(" - "));
         multiplyButton.setOnAction(e -> append(" × "));
         fractionButton.setOnAction(e -> append(" / "));
 
-        /* edit & '=' */
         equalButton.setOnAction(e -> onEqual());
-        delButton.setOnAction(e -> deleteBlock()); // xoá theo block
+        delButton.setOnAction(e -> deleteBlock());
         clrButton.setOnAction(e -> clearAll());
 
         clearAll();
@@ -302,29 +301,25 @@ public class appController
         return bd.toPlainString();
     }
 
-    /* ===== DEL: xoá theo block ===== */
     private void deleteBlock() {
         String s = inputText.getText();
         if (s == null || s.isBlank()) return;
 
         int end = s.length() - 1;
-        // bỏ khoảng trắng cuối
         while (end >= 0 && Character.isWhitespace(s.charAt(end))) end--;
         if (end < 0) { inputText.clear(); return; }
 
         int start = end;
         char c = s.charAt(end);
 
-        // số (cả phần thập phân)
         if (Character.isDigit(c) || c == '.') {
             while (start >= 0 && (Character.isDigit(s.charAt(start)) || s.charAt(start) == '.')) start--;
-            start++; // đứng vào đầu cụm số
+            start++;
         }
-        // dấu ')' riêng lẻ
         else if (c == ')') {
-            start = end; // xoá mỗi ')'
+            start = end;
         }
-        // '(' + tên hàm phía trước -> xoá "sin(" một khối
+
         else if (c == '(') {
             while (start - 1 >= 0) {
                 char p = s.charAt(start - 1);
@@ -365,7 +360,7 @@ public class appController
         inputText.setText(s.substring(0, start) + s.substring(end + 1));
     }
 
-    /* ===== "=" ===== */
+    // Dấu '='
     private void onEqual() {
         try {
             String original = inputText.getText().trim();
@@ -379,18 +374,13 @@ public class appController
         }
     }
 
-    /* ===================================================================
-       EVALUATOR: parser đệ quy, ưu tiên:
-       !  >  ^ (phải kết hợp)  >  * / mod & nhân ngầm  >  + -
-       Hỗ trợ: π e Ans, sin/cos/…/Abs/log/e^(x), frac(a,b), root(n,a), hậu tố !
-       =================================================================== */
+    // Ưu tiên mức độ
     private double evaluate(String expr) {
         if (expr == null) return 0.0;
         String s = expr.replaceAll("\\s+", "").replace('×', '*').replace('x', '*').replace('÷', '/');
         return new Parser(s).parse();
     }
 
-    /* --------------------- Parser nội bộ --------------------- */
     private final class Parser {
         private final String s;
         private int i = 0;
@@ -413,7 +403,6 @@ public class appController
             }
         }
 
-        // * / mod + implicit multiplication
         double parseMulDivMod() {
             double v = parsePow();
             while (true) {
@@ -425,7 +414,6 @@ public class appController
             }
         }
 
-        // ^ (right associative)
         double parsePow() {
             double base = parsePostfix();
             if (match('^')) {
@@ -495,7 +483,6 @@ public class appController
             return readNumber();
         }
 
-        /* ---- helpers ---- */
         private char peek() { return i < s.length() ? s.charAt(i) : '\0'; }
         private char peekNext() { return (i+1) < s.length() ? s.charAt(i+1) : '\0'; }
         private boolean match(char c) { if (peek()==c) { i++; return true; } return false; }
@@ -506,12 +493,11 @@ public class appController
         }
         private boolean peekIsLetter() { char c = peek(); return (c>='A'&&c<='Z') || (c>='a'&&c<='z'); }
 
-        // có bắt đầu một "atom" mới không? (để nhân ngầm)
         private boolean beginsAtom() {
             char c = peek();
             if (c=='(' || c=='π' || Character.isDigit(c) || c=='.') return true;
-            if (peekIsLetter()) return true;           // sin, cos, e, …
-            if (s.startsWith("Ans", i)) return true;   // Ans
+            if (peekIsLetter()) return true;
+            if (s.startsWith("Ans", i)) return true;
             return false;
         }
 
