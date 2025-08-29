@@ -25,13 +25,14 @@ public class calculation {
     { 
     	return ans; 
     }
-
-    /* ================== Helpers ================== */
+    
+    // Helpers
     private double setAns(double v) { ans = v; return v; }
     private double toRad(double x)  { return degrees ? Math.toRadians(x) : x; }
     private double fromRad(double r){ return degrees ? Math.toDegrees(r) : r; }
-
-    /* ================== Cơ bản ================== */
+    
+    
+    // Các phép toán cơ bản
     // Phép cộng
     public double add(double a, double b) 
     {
@@ -110,6 +111,7 @@ public class calculation {
     }
     
     // Các hàm log
+    // Chắc dùng 1 cái log thôi chứ cho nhiều phiền vl =))))))
     public double log10(double x) 
     {
         if (x <= 0.0) throw new IllegalArgumentException("log10 domain x>0");
